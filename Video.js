@@ -1,16 +1,22 @@
-import React, {Component, PropTypes} from 'react';
-import {StyleSheet, requireNativeComponent, NativeModules, View, Image} from 'react-native';
-import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource';
-import VideoResizeMode from './VideoResizeMode.js';
+import React, { Component } from "react";
+import {
+  StyleSheet,
+  requireNativeComponent,
+  NativeModules,
+  View,
+  Image,
+} from "react-native";
+import resolveAssetSource from "react-native/Libraries/Image/resolveAssetSource";
+import VideoResizeMode from "./VideoResizeMode.js";
+import PropTypes from "prop-types";
 
 const styles = StyleSheet.create({
   base: {
-    overflow: 'hidden',
+    overflow: "hidden",
   },
 });
 
 export default class Video extends Component {
-
   constructor(props) {
     super(props);
 
@@ -65,7 +71,7 @@ export default class Video extends Component {
 
   _onSeek = (event) => {
     if (this.state.showPoster) {
-      this.setState({showPoster: false});
+      this.setState({ showPoster: false });
     }
 
     if (this.props.onSeek) {
@@ -122,8 +128,8 @@ export default class Video extends Component {
   };
 
   _onPlaybackRateChange = (event) => {
-    if (this.state.showPoster && (event.nativeEvent.playbackRate !== 0)) {
-      this.setState({showPoster: false});
+    if (this.state.showPoster && event.nativeEvent.playbackRate !== 0) {
+      this.setState({ showPoster: false });
     }
 
     if (this.props.onPlaybackRateChange) {
@@ -141,15 +147,19 @@ export default class Video extends Component {
     }
 
     const isNetwork = !!(uri && uri.match(/^https?:/));
-    const isAsset = !!(uri && uri.match(/^(assets-library|file|content|ms-appx|ms-appdata):/));
+    const isAsset = !!(
+      uri && uri.match(/^(assets-library|file|content|ms-appx|ms-appdata):/)
+    );
 
     let nativeResizeMode;
     if (resizeMode === VideoResizeMode.stretch) {
       nativeResizeMode = NativeModules.UIManager.RCTVideo.Constants.ScaleToFill;
     } else if (resizeMode === VideoResizeMode.contain) {
-      nativeResizeMode = NativeModules.UIManager.RCTVideo.Constants.ScaleAspectFit;
+      nativeResizeMode =
+        NativeModules.UIManager.RCTVideo.Constants.ScaleAspectFit;
     } else if (resizeMode === VideoResizeMode.cover) {
-      nativeResizeMode = NativeModules.UIManager.RCTVideo.Constants.ScaleAspectFill;
+      nativeResizeMode =
+        NativeModules.UIManager.RCTVideo.Constants.ScaleAspectFill;
     } else {
       nativeResizeMode = NativeModules.UIManager.RCTVideo.Constants.ScaleNone;
     }
@@ -162,7 +172,7 @@ export default class Video extends Component {
         uri,
         isNetwork,
         isAsset,
-        type: source.type || 'mp4',
+        type: source.type || "mp4",
         mainVer: source.mainVer || 0,
         patchVer: source.patchVer || 0,
       },
@@ -184,34 +194,23 @@ export default class Video extends Component {
 
     if (this.props.poster && this.state.showPoster) {
       const posterStyle = {
-        position: 'absolute',
+        position: "absolute",
         left: 0,
         top: 0,
         right: 0,
         bottom: 0,
-        resizeMode: 'contain',
+        resizeMode: "contain",
       };
 
       return (
         <View style={nativeProps.style}>
-          <RCTVideo
-            ref={this._assignRoot}
-            {...nativeProps}
-          />
-          <Image
-            style={posterStyle}
-            source={{uri: this.props.poster}}
-          />
+          <RCTVideo ref={this._assignRoot} {...nativeProps} />
+          <Image style={posterStyle} source={{ uri: this.props.poster }} />
         </View>
       );
     }
 
-    return (
-      <RCTVideo
-        ref={this._assignRoot}
-        {...nativeProps}
-      />
-    );
+    return <RCTVideo ref={this._assignRoot} {...nativeProps} />;
   }
 }
 
@@ -234,10 +233,10 @@ Video.propTypes = {
   /* Wrapper component */
   source: PropTypes.oneOfType([
     PropTypes.shape({
-      uri: PropTypes.string
+      uri: PropTypes.string,
     }),
     // Opaque type returned by require('./video.mp4')
-    PropTypes.number
+    PropTypes.number,
   ]),
   resizeMode: PropTypes.string,
   poster: PropTypes.string,
@@ -275,7 +274,7 @@ Video.propTypes = {
   ...View.propTypes,
 };
 
-const RCTVideo = requireNativeComponent('RCTVideo', Video, {
+const RCTVideo = requireNativeComponent("RCTVideo", Video, {
   nativeOnly: {
     src: true,
     seek: true,
